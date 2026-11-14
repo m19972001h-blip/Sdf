@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مقارنة الأسماء بين ملفين إكسل</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root { --bg:#f6f6f4; --card:#fff; --text:#1c1c1a; --muted:#6b6b66; --accent:#1f6feb; --line:#e2e2dd; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --card:#222221; --text:#f0f0ec; --muted:#a0a09a; --accent:#5b9cff; --line:#3a3a37; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; padding-top:calc(16px + env(safe-area-inset-top,0px)); padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+         font-family:-apple-system,"Geeza Pro","Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--text); }
+  h1 { font-size:20px; margin:0 0 14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; }
+  label { display:block; font-size:14px; color:var(--muted); margin:8px 0 4px; }
+  input[type=file], select, input[type=number] { width:100%; font-size:16px; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  button { width:100%; font-size:17px; padding:13px; border:0; border-radius:12px; background:var(--accent); color:#fff; margin-top:8px; }
+  button.secondary { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  button:disabled { opacity:.45; }
+  #status { margin:8px 0; font-size:14px; color:var(--muted); }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  th, td { padding:8px 6px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap; }
+  th { color:var(--muted); font-weight:600; }
+  .exact { color:#1a8a3c; font-weight:600; }
+  small { color:var(--muted); }
+</style>
+</head>
+<body>
+<h1>مقارنة الأسماء الثلاثية والرباعية بين ملفين</h1>
+
+<div class="card">
+  <label>الملف الأول (Excel)</label>
+  <input type="file" id="f1" accept=".xlsx,.xls,.xlsm,.csv">
+  <label>عمود الأسماء في الملف الأول</label>
+  <select id="c1" disabled></select>
+
+  <label style="margin-top:16px">الملف الثاني (Excel)</label>
+  <input type="file" id="f2" accept=".xlsx,.xls,.xlsm,.csv">
+  <label>عمود الأسماء في الملف الثاني</label>
+  <select id="c2" disabled></select>
+
+  <label style="margin-top:16px">حد التشابه %</label>
+  <input type="number" id="th" value="85" min="50" max="100" inputmode="numeric">
+
+  <button id="run" disabled>بحث عن المتشابهات</button>
+  <button id="export" class="secondary" disabled>حفظ النتائج في إكسل</button>
+  <div id="status"></div>
+</div>
+
+<div class="card scroll" id="resBox" style="display:none">
+  <table>
+    <thead><tr><th>الاسم في الملف الأول</th><th>الاسم في الملف الثاني</th><th>الكلمات</th><th>التشابه %</th><th>النوع</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<small>تتم المعالجة بالكامل على جهازك، ولا يُرفع أي ملف إلى الإنترنت.</small>
+
+<script>
+const state = [ {wb:null, rows:[], headers:[]}, {wb:null, rows:[], headers:[]} ];
+let results = [];
+const $ = id => document.getElementById(id);
+
+// ---------- توحيد النص العربي ----------
+function normalize(t) {
+  let s = String(t).trim();
+  s = s.replace(/[\u064B-\u065F\u0670\u0640]/g, "");
+  s = s.replace(/[إأآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/ؤ/g, "و").replace(/ئ/g, "ي");
+  s = s.replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+  // دمج الأسماء المركبة: عبد الله -> عبدالله
+  s = s.replace(/(^|\s)(عبد|ابو|ابي|ذو) (\S+)/g, "$1$2$3");
+  return s;
+}
+const wc = n => n.split(" ").filter(Boolean).length;
+
+// ---------- نسبة التشابه (Levenshtein) ----------
+function lev(a, b) {
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  let prev = Array.from({length:n+1}, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+function ratio(a, b) { const L = Math.max(a.length, b.length); return L ? 1 - lev(a, b) / L : 1; }
+function similarity(a, b) {
+  const sa = a.split(" ").sort().join(" "), sb = b.split(" ").sort().join(" ");
+  return Math.max(ratio(a, b), ratio(sa, sb)) * 100;
+}
+
+// ---------- قراءة الملفات ----------
+async function loadFile(k, file) {
+  $("status").textContent = "جارٍ قراءة الملف...";
+  try {
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:"array"});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:""});
+    const headers = (rows[0] || []).map((h, i) => String(h).trim() || ("عمود " + (i+1)));
+    state[k] = {rows, headers};
+    const sel = $("c" + (k+1));
+    sel.innerHTML = headers.map((h, i) => `<option value="${i}">${h}</option>`).join("");
+    const guess = headers.findIndex(h => h.includes("اسم") || h.toLowerCase().includes("name"));
+    sel.value = guess >= 0 ? guess : 0;
+    sel.disabled = false;
+    $("status").textContent = "";
+  } catch (e) {
+    $("status").textContent = "تعذّرت قراءة الملف: " + e.message;
+  }
+  $("run").disabled = !(state[0].rows.length && state[1].rows.length);
+}
+$("f1").onchange = e => e.target.files[0] && loadFile(0, e.target.files[0]);
+$("f2").onchange = e => e.target.files[0] && loadFile(1, e.target.files[0]);
+
+function getNames(k) {
+  const col = +$("c" + (k+1)).value;
+  const out = [];
+  state[k].rows.slice(1).forEach((r, i) => {
+    const v = r[col];
+    if (v === undefined || v === "") return;
+    const n = normalize(v);
+    if (wc(n) === 3 || wc(n) === 4) out.push({row:i+2, original:String(v).trim(), norm:n});
+  });
+  return out;
+}
+
+// ---------- المطابقة ----------
+function findMatches(n1, n2, th) {
+  const index = new Map();
+  n2.forEach((r, j) => new Set(r.norm.split(" ")).forEach(w => {
+    if (!index.has(w)) index.set(w, []);
+    index.get(w).push(j);
+  }));
+  const out = [];
+  for (const r1 of n1) {
+    const counts = new Map();
+    new Set(r1.norm.split(" ")).forEach(w => (index.get(w) || []).forEach(j => counts.set(j, (counts.get(j) || 0) + 1)));
+    for (const [j, c] of counts) {
+      if (c < 2) continue; // كلمتان مشتركتان على الأقل
+      const r2 = n2[j];
+      const score = similarity(r1.norm, r2.norm);
+      if (score >= th) out.push({
+        "الاسم في الملف الأول": r1.original, "الصف في الملف الأول": r1.row,
+        "الاسم في الملف الثاني": r2.original, "الصف في الملف الثاني": r2.row,
+        "عدد كلمات الاسم": wc(r1.norm), "نسبة التشابه %": Math.round(score*10)/10,
+        "نوع المطابقة": r1.norm === r2.norm ? "تطابق تام" : "تشابه"
+      });
+    }
+  }
+  return out.sort((a, b) => b["نسبة التشابه %"] - a["نسبة التشابه %"]);
+}
+
+$("run").onclick = () => {
+  $("status").textContent = "جارٍ البحث...";
+  setTimeout(() => {
+    const n1 = getNames(0), n2 = getNames(1);
+    const th = Math.min(100, Math.max(50, +$("th").value || 85));
+    results = findMatches(n1, n2, th);
+    $("rows").innerHTML = results.map(r => `<tr>
+      <td>${r["الاسم في الملف الأول"]}</td><td>${r["الاسم في الملف الثاني"]}</td>
+      <td>${r["عدد كلمات الاسم"]}</td><td>${r["نسبة التشابه %"]}</td>
+      <td class="${r["نوع المطابقة"] === "تطابق تام" ? "exact" : ""}">${r["نوع المطابقة"]}</td></tr>`).join("");
+    $("resBox").style.display = results.length ? "block" : "none";
+    $("export").disabled = !results.length;
+    $("status").textContent = `${results.length} نتيجة (من ${n1.length} × ${n2.length} اسم ثلاثي/رباعي)`;
+  }, 30);
+};
+
+$("export").onclick = () => {
+  const ws = XLSX.utils.json_to_sheet(results);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "النتائج");
+  XLSX.writeFile(wb, "نتائج_المطابقة.xlsx");
+};
+</script>
+</body>
+</html>
