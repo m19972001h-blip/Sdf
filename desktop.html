@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<title>معلومات شخصية</title>
+<style>
+:root{--bg:#0b1630;--c:#13244a;--line:#243c70;--t:#eef2fb;--m:#8fa1c7;--ac:#f0b43c;--fs:16px;--ff:Tahoma}
+[data-theme=light]{--bg:#eef1f7;--c:#fff;--line:#d5dbe8;--t:#16213a;--m:#5b6785}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--t);font-family:var(--ff),"Segoe UI",sans-serif}
+[hidden]{display:none!important}
+#credit{position:fixed;top:8px;left:12px;z-index:50;font-size:clamp(11px,1.5vw,14px);color:var(--ac);background:var(--c);border:1px solid var(--line);border-radius:20px;padding:4px 12px;direction:rtl}
+.wrap{max-width:1280px;margin:auto;padding:52px 16px 28px}
+.ctr{min-height:100vh;display:grid;place-items:center;padding:16px}
+.card{background:var(--c);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.box{width:min(420px,100%)}
+h1{margin:0;color:var(--ac);font-size:1.7rem}h2{margin:6px 0 12px;color:var(--ac)}
+.m{color:var(--m);font-size:.85rem}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+nav{display:flex;flex-wrap:wrap;gap:6px}
+nav button{background:var(--c);color:var(--t);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
+nav .on{background:var(--ac);color:#1b1404;border-color:var(--ac);font-weight:700}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--t);font:inherit;margin:6px 0}
+input[type=color]{height:42px;padding:2px}input[type=range]{padding:0}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ac);color:#1b1404;border:0;border-radius:10px;padding:10px 18px;font-weight:700;margin:4px 0}
+.btn.o{background:none;border:1.5px solid var(--ac);color:var(--ac)}.btn.r,.sm.r{background:#c0392b;color:#fff;border:0}.btn.g{background:#1f9d55;color:#fff}
+.sm{background:var(--bg);color:var(--t);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:.85rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}.bar>*{flex:1 1 150px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px}
+.sc{text-align:center}.sc b{display:block;font-size:2rem;color:var(--ac)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid var(--line)}
+.row b{flex:1 1 200px}
+.pr{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:8px}
+.pie{width:150px;height:150px;border-radius:50%;flex:none}
+.pr ul{list-style:none;margin:0;padding:0;flex:1 1 150px}.pr li{margin:5px 0}.pr i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-inline-end:6px}
+.res{border-radius:12px;padding:10px;margin-bottom:8px;border:1px solid var(--line);border-inline-start:5px solid}
+.l80{background:rgba(53,201,160,.16);border-inline-start-color:#35c9a0}.l60{background:rgba(240,180,60,.16);border-inline-start-color:#f0b43c}.l40{background:rgba(251,146,60,.13);border-inline-start-color:#fb923c}
+.two{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}.two span{display:block}
+.pc{font-weight:700;font-size:1.2rem;color:var(--ac)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chips button{background:var(--c);color:var(--t);border:1px solid var(--line);border-radius:18px;padding:6px 16px}.chips .on{background:var(--ac);color:#1b1404;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:99}
+#ov div.in{width:min(460px,90%)}.track{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:10px}#bf{height:100%;width:0;background:var(--ac);transition:width .15s}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ac);color:#1b1404;padding:10px 20px;border-radius:10px;z-index:120;max-width:90%}
+dialog{background:var(--c);color:var(--t);border:1px solid var(--line);border-radius:14px;max-width:min(420px,92%)}
+@media(max-width:700px){.two{grid-template-columns:1fr}.pc{text-align:center}}
+</style>
+</head>
+<body>
+<div id="credit">@رضوان</div>
+
+<main id="login" class="ctr"><div class="card box">
+  <div style="text-align:center;font-size:56px">🪶</div><h1 style="text-align:center">معلومات شخصية</h1>
+  <p class="m" style="text-align:center">قاعدة بيانات متكاملة لإدارة المعلومات الشخصية</p>
+  <input id="lu" placeholder="اسم المستخدم" autocomplete="username">
+  <input id="lp" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+  <div id="le" style="color:#ff7b7b;min-height:20px"></div>
+  <button class="btn" style="width:100%" onclick="login()">🔒 تسجيل الدخول</button>
+</div></main>
+
+<main id="pw" class="ctr" hidden><div class="card box">
+  <h2>تغيير كلمة المرور</h2><p class="m">لأمان أفضل يجب تغيير كلمة المرور الافتراضية عند أول دخول.</p>
+  <input id="n1" type="password" placeholder="كلمة المرور الجديدة (6 أحرف فأكثر)">
+  <input id="n2" type="password" placeholder="تأكيد كلمة المرور">
+  <div id="ne" style="color:#ff7b7b;min-height:20px"></div>
+  <button class="btn" style="width:100%" onclick="chg()">حفظ ومتابعة</button>
+</div></main>
+
+<div id="app" class="wrap" hidden>
+<header><h1>🪶 معلومات شخصية</h1>
+<nav id="nav"></nav></header>
+
+<section id="v-home">
+  <div class="grid" id="hs"></div>
+  <div class="card"><h2>ابدأ من هنا</h2>
+    <button class="btn" onclick="nav('files')">📂 إضافة ملفات Excel</button>
+    <button class="btn o" onclick="nav('search')">🔍 البحث</button>
+    <button class="btn o" onclick="nav('cmp')">🔁 المتشابهات</button>
+    <p class="m">اختصارات: Ctrl+1…6 للتنقل، Ctrl+F للبحث، والنقر بزر الماوس الأيمن للنسخ واللصق والقص.</p></div>
+</section>
+
+<section id="v-files" hidden>
+  <h2>الملفات والسجلات</h2>
+  <div class="card"><button class="btn" onclick="imp()">➕ إضافة ملفات Excel (عدد غير محدود)</button>
+    <div id="fl"></div></div>
+  <div id="fst"></div>
+</section>
+
+<section id="v-search" hidden>
+  <h2>البحث المتقدم</h2>
+  <div class="card"><div class="bar">
+    <input id="sq" placeholder="ابحث بالاسم (يتجاهل الهمزات والتاء المربوطة والألف المقصورة)...">
+    <select id="sf"></select><select id="sqa"></select>
+    <select id="ssx"><option value="">الذكور والإناث</option><option value="M">ذكور</option><option value="F">إناث</option></select>
+    <button class="btn" onclick="srch()">بحث</button></div>
+    <div id="sc" class="m"></div><div id="sl"></div>
+    <button class="btn o" id="sm" onclick="srch(1)" hidden>عرض المزيد</button>
+    <div class="bar"><button class="btn g" onclick="expS('xlsx')">📄 تصدير Excel</button><button class="btn g" onclick="expS('pdf')">📕 تصدير PDF</button></div></div>
+</section>
+
+<section id="v-cmp" hidden>
+  <h2>الأسماء المتشابهة بين الملفات</h2>
+  <div class="card"><div class="bar"><select id="ca"></select><select id="cb"></select>
+    <select id="cqa"></select>
+    <select id="csx"><option value="">الذكور والإناث</option><option value="M">ذكور</option><option value="F">إناث</option></select></div>
+    <div class="chips" id="cl-chips"></div>
+    <button class="btn" onclick="runCmp()">🔁 بدء المقارنة</button>
+    <div id="cc" class="m"></div></div>
+  <div id="cl"></div>
+  <button class="btn o" id="cm" onclick="CN+=200;drawC()" hidden>عرض المزيد</button>
+  <div class="bar"><button class="btn g" onclick="expC('xlsx')">📄 تصدير Excel</button><button class="btn g" onclick="expC('pdf')">📕 تصدير PDF</button></div>
+</section>
+
+<section id="v-rep" hidden>
+  <h2>التقارير والإحصائيات</h2>
+  <div class="card"><select id="rf" onchange="stats($('#rs'),+this.value||0)"></select></div>
+  <div id="rs"></div>
+</section>
+
+<section id="v-set" hidden>
+  <h2>الإعدادات</h2>
+  <div class="grid">
+    <div class="card"><b>المظهر</b>
+      <select onchange="sv('theme',this.value)" id="st-th"><option value="dark">داكن</option><option value="light">فاتح</option></select>
+      <label class="m">لون الواجهة</label><input type="color" id="st-ac" oninput="sv('ac',this.value)">
+      <label class="m">لون النص</label><input type="color" id="st-tc" oninput="sv('tc',this.value)">
+      <label class="m">حجم الخط</label><input type="range" min="12" max="24" id="st-fs" oninput="sv('fs',+this.value)">
+      <label class="m">نوع الخط</label><select id="st-ff" onchange="sv('ff',this.value)"><option>Tahoma</option><option>Segoe UI</option><option>Arial</option><option>Times New Roman</option></select>
+      <button class="btn o" onclick="ST={};sv();setLoad()">استعادة الافتراضي</button></div>
+    <div class="card"><b>قاعدة البيانات</b><p class="m" id="sd"></p>
+      <button class="btn o" onclick="chDir()">📁 تغيير مجلد الحفظ</button>
+      <button class="btn o" onclick="bak()">💾 نسخة احتياطية</button>
+      <button class="btn o" onclick="rest()">♻️ استعادة نسخة</button></div>
+    <div class="card"><b>كلمة المرور</b>
+      <input id="po" type="password" placeholder="الحالية"><input id="pn" type="password" placeholder="الجديدة (6 أحرف فأكثر)">
+      <button class="btn" onclick="chgS()">تغيير</button>
+      <hr style="border-color:var(--line)">
+      <button class="btn o" onclick="about()">ℹ️ حول البرنامج</button>
+      <button class="btn o" onclick="contact()">✉️ تواصل معنا</button>
+      <button class="btn r" onclick="location.reload()">تسجيل الخروج</button></div>
+  </div>
+  <div class="card"><b>سجل النشاط</b><div id="sg"></div></div>
+</section>
+</div>
+
+<div id="ov" hidden><div class="card in"><b id="bm"></b><div class="track"><div id="bf"></div></div></div></div>
+<div id="toast" hidden></div>
+<dialog id="md"></dialog>
+
+<script>
+const A=window.api,$=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const COL=["#5b9cff","#f0b43c","#35c9a0","#ff6fb5","#a78bfa","#fb923c","#22d3ee","#f87171","#84cc16","#e879f9","#94a3b8","#facc15"];
+const VIEWS=[["home","🏠 الرئيسية"],["files","📂 الملفات"],["search","🔍 البحث"],["cmp","🔁 المتشابهات"],["rep","📈 التقارير"],["set","⚙️ الإعدادات"]];
+let INFO={files:[],log:[],qs:[],dir:""},ST={},LP="",tk=0,CL=60,CR=[],CN=200,SQ={rows:[],total:0};
+try{ST=JSON.parse(localStorage.st||"{}")}catch(e){}
+
+// ---- المظهر ----
+function applyST(){
+  const d=document.documentElement,s=d.style;d.dataset.theme=ST.theme||"dark";
+  s.setProperty("--fs",(ST.fs||16)+"px");s.setProperty("--ff",ST.ff||"Tahoma");
+  ST.ac?s.setProperty("--ac",ST.ac):s.removeProperty("--ac");ST.tc?s.setProperty("--t",ST.tc):s.removeProperty("--t");
+}
+function sv(k,v){if(k)ST[k]=v;localStorage.st=JSON.stringify(ST);applyST()}
+applyST();
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,4000)}
+function bar(p,m){const o=$("#ov");if(p<0){o.hidden=true;return}o.hidden=false;$("#bf").style.width=p+"%";$("#bm").textContent=(m||"")+" — "+p+"%"}
+A.on(d=>bar(d.p,d.m));
+
+// ---- الدخول ----
+async function login(){
+  const r=await A.inv("login",{u:$("#lu").value.trim(),p:$("#lp").value});
+  if(!r.ok)return $("#le").textContent="اسم المستخدم أو كلمة المرور غير صحيحة";
+  LP=$("#lp").value;$("#lp").value="";$("#le").textContent="";
+  if(r.must){$("#login").hidden=true;$("#pw").hidden=false;$("#n1").focus()}else enter();
+}
+async function chg(){
+  const a=$("#n1").value,b=$("#n2").value;
+  if(a.length<6||a==="1891"||a!==b)return $("#ne").textContent="6 أحرف فأكثر، مختلفة عن الافتراضية، ومتطابقة في الحقلين";
+  const r=await A.inv("chpw",{o:LP,n:a});if(r!=="ok")return $("#ne").textContent=r;LP="";enter();
+}
+function enter(){$("#login").hidden=true;$("#pw").hidden=true;$("#app").hidden=false;nav("home")}
+async function chgS(){const r=await A.inv("chpw",{o:$("#po").value,n:$("#pn").value});toast(r==="ok"?"تم تغيير كلمة المرور":r);if(r==="ok"){$("#po").value=$("#pn").value=""}}
+
+// ---- التنقل ----
+$("#nav").innerHTML=VIEWS.map(([k,l])=>`<button data-v="${k}" onclick="nav('${k}')">${l}</button>`).join("");
+$("#cl-chips").innerHTML=[40,60,80].map(l=>`<button data-l="${l}" onclick="setL(${l})">${l}% ${{40:"ثنائي",60:"ثلاثي",80:"رباعي"}[l]}</button>`).join("");
+function setL(l){CL=l;document.querySelectorAll("#cl-chips button").forEach(b=>b.classList.toggle("on",+b.dataset.l===l))}setL(60);
+async function nav(v){
+  VIEWS.forEach(([k])=>$("#v-"+k).hidden=k!==v);
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  if(v==="home")homeLoad();if(v==="files")files();if(v==="set")setLoad();
+  if(v==="search"){await fillF();srch()}if(v==="cmp")fillF();if(v==="rep"){await fillF();stats($("#rs"),+$("#rf").value||0)}
+  scrollTo(0,0);
+}
+function fill(sel,h){const e=$(sel),v=e.value;e.innerHTML=h;if([...e.options].some(o=>o.value===v))e.value=v}
+async function fillF(){
+  INFO=await A.inv("info");
+  const fo=INFO.files.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join(""),all=`<option value="0">كل الملفات</option>`+fo;
+  const qo=`<option value="">كل الأقضية</option>`+INFO.qs.map(k=>`<option>${esc(k)}</option>`).join("");
+  fill("#sf",all);fill("#rf",all);fill("#sqa",qo);fill("#cqa",qo);fill("#ca",fo);fill("#cb",fo);
+  if($("#cb").options.length>1&&$("#ca").value===$("#cb").value)$("#cb").selectedIndex=1;
+}
+
+// ---- الإحصائيات والمخططات الدائرية ----
+function pieBox(d,t){
+  if(!d.length)return"<p class=m>لا توجد بيانات</p>";
+  let a=0;const g=d.map((x,i)=>{const s=a;a+=x[1]/t*100;return`${COL[i%12]} ${s}% ${a}%`}).join(",");
+  return`<div class="pr"><div class="pie" style="background:conic-gradient(${g})"></div><ul>${d.map((x,i)=>`<li><i style="background:${COL[i%12]}"></i>${esc(x[0])} <b>${(x[1]/t*100).toFixed(1)}%</b> <span class="m">(${x[1]})</span></li>`).join("")}</ul></div>`;
+}
+async function stats(el,fid){
+  const s=await A.inv("stats",fid||0),t=s.total;
+  if(!t){el.innerHTML='<div class="card m">لا توجد بيانات بعد. أضف ملفات Excel من نافذة الملفات.</div>';return}
+  const qd=s.qada.map(x=>[x.k,x.n]),qs=qd.reduce((a,x)=>a+x[1],0);if(t>qs)qd.push(["غير محدد/أخرى",t-qs]);
+  const sd=s.sex.map(x=>[x.k==="M"?"ذكور":"إناث",x.n]),ss=sd.reduce((a,x)=>a+x[1],0);if(ss&&t>ss)sd.push(["غير محدد",t-ss]);
+  el.innerHTML=`<div class="grid"><div class="card"><b>الأقضية — ${t} اسم</b>${pieBox(qd,t)}</div><div class="card"><b>الذكور والإناث</b>${ss?pieBox(sd,t):"<p class=m>لا يوجد عمود للجنس في الملفات</p>"}</div></div>`;
+}
+async function homeLoad(){
+  INFO=await A.inv("info");const s=await A.inv("stats",0);
+  $("#hs").innerHTML=[[INFO.files.length,"ملف"],[s.total,"اسم"],[INFO.qs.length,"قضاء"]].map(x=>`<div class="card sc"><b>${x[0]}</b><span class="m">${x[1]}</span></div>`).join("");
+}
+
+// ---- الملفات ----
+async function files(){
+  INFO=await A.inv("info");
+  $("#fl").innerHTML=INFO.files.map(f=>`<div class="row"><b>📗 ${esc(f.name)}</b><span class="m">${f.rows} اسم • ${new Date(f.at).toLocaleDateString("ar-IQ")}</span><button class="sm r" onclick="rm(${f.id})">حذف</button></div>`).join("")||'<p class="m">لا توجد ملفات بعد.</p>';
+  stats($("#fst"),0);
+}
+async function imp(){bar(0,"بدء الاستيراد");try{await A.inv("import")}finally{bar(-1)}files()}
+async function rm(id){if(confirm("حذف هذا الملف وبياناته من القاعدة؟")){await A.inv("remove",id);files()}}
+
+// ---- البحث ----
+async function srch(more){
+  const t=++tk,o={q:$("#sq").value,qada:$("#sqa").value,sex:$("#ssx").value,fid:+$("#sf").value||0,off:more?SQ.rows.length:0};
+  const r=await A.inv("search",o);if(t!==tk)return;
+  SQ.total=r.total;SQ.rows=more?SQ.rows.concat(r.rows):r.rows;
+  $("#sc").textContent=`النتائج: ${SQ.total} (معروض ${SQ.rows.length})`;
+  $("#sl").innerHTML=SQ.rows.map(r=>`<div class="row"><b>${esc(r.name)}</b><span class="m">${esc(r.fn)} • ${r.c}${r.r}</span><span>${esc(r.qada)}</span><span>${r.sex==="M"?"ذكر":r.sex==="F"?"أنثى":""}</span><button class="sm" onclick="go(${r.fid},${r.r},'${r.c}')">📍 الانتقال</button></div>`).join("");
+  $("#sm").hidden=SQ.rows.length>=SQ.total;
+}
+let tm;$("#sq").oninput=()=>{clearTimeout(tm);tm=setTimeout(()=>srch(),200)};
+["#sf","#sqa","#ssx"].forEach(s=>$(s).onchange=()=>srch());
+async function go(fid,row,col){toast(await A.inv("go",{fid,row,col}))}
+async function ex(kind,head,rows){if(!rows.length)return toast("لا توجد نتائج للتصدير");const p=await A.inv("exp",{kind,head,rows});if(p)toast("تم الحفظ: "+p)}
+const SX={M:"ذكر",F:"أنثى"};
+const expS=k=>ex(k,["الاسم","الملف","الخلية","القضاء","الجنس"],SQ.rows.map(r=>[r.name,r.fn,r.c+r.r,r.qada,SX[r.sex]||""]));
+
+// ---- المتشابهات ----
+async function runCmp(){
+  const o={a:+$("#ca").value,b:+$("#cb").value,lv:CL,qada:$("#cqa").value,sex:$("#csx").value};
+  if(!o.a||!o.b)return toast("أضف ملفين على الأقل من نافذة الملفات");
+  bar(50,"جارٍ المقارنة");await new Promise(r=>setTimeout(r,30));
+  try{CR=await A.inv("cmp",o)}finally{bar(-1)}CN=200;drawC();
+}
+function side(x){return`<div><b>${esc(x.n)}</b><span class="m">${esc(x.f)} • ${x.c}${x.r}${x.q?" • "+esc(x.q):""}</span></div>`}
+function drawC(){
+  $("#cc").textContent="عدد المتشابه: "+CR.length+(CR.length>=20000?" (اقتُصر على أول 20000)":"");
+  $("#cl").innerHTML=CR.slice(0,CN).map((x,i)=>`<div class="res l${x.s}"><div class="two">${side(x.a)}<div class="pc">${x.s}%</div>${side(x.b)}</div><div class="acts"><button class="sm" onclick="goc(${i},'a')">الانتقال إلى الاسم في الملف الأول</button><button class="sm" onclick="goc(${i},'b')">الانتقال إلى الاسم في الملف الثاني</button></div></div>`).join("");
+  $("#cm").hidden=CN>=CR.length;
+}
+function goc(i,w){const t=CR[i][w];go(t.fid,t.r,t.c)}
+const expC=k=>ex(k,["الاسم في الملف الأول","الملف الأول","الخلية","الاسم في الملف الثاني","الملف الثاني","الخلية","التشابه %"],CR.map(x=>[x.a.n,x.a.f,x.a.c+x.a.r,x.b.n,x.b.f,x.b.c+x.b.r,x.s]));
+
+// ---- الإعدادات ----
+async function setLoad(){
+  INFO=await A.inv("info");$("#sd").textContent="المجلد: "+INFO.dir;
+  $("#sg").innerHTML=INFO.log.map(l=>`<div class="row"><span class="m">${new Date(l.at).toLocaleString("ar-IQ")}</span><span>${esc(l.msg)}</span></div>`).join("")||'<p class="m">لا يوجد نشاط بعد.</p>';
+  $("#st-th").value=ST.theme||"dark";$("#st-ac").value=ST.ac||"#f0b43c";$("#st-tc").value=ST.tc||"#eef2fb";$("#st-fs").value=ST.fs||16;$("#st-ff").value=ST.ff||"Tahoma";
+}
+async function chDir(){const d=await A.inv("dir");if(d){toast("تم تغيير المجلد");setLoad()}}
+async function bak(){const p=await A.inv("backup");if(p)toast("تم حفظ النسخة: "+p)}
+async function rest(){if(confirm("سيتم استبدال البيانات الحالية بالنسخة المختارة. متابعة؟")){if(await A.inv("restore")){toast("تمت الاستعادة");setLoad()}}}
+function modal(h){$("#md").innerHTML=h+'<p style="text-align:center"><button class="btn" onclick="$(\'#md\').close()">إغلاق</button></p>';$("#md").showModal()}
+const about=()=>modal('<h2>حول البرنامج</h2><p>معلومات شخصية — الإصدار 2.0</p><p>@رضوان</p>');
+const contact=()=>modal('<h2>تواصل معنا</h2><p>@رضوان</p>');
+
+// ---- اختصارات لوحة المفاتيح ----
+addEventListener("keydown",e=>{
+  if(e.key==="Enter"){const id=e.target.id;if(id==="lp"||id==="lu")login();else if(id==="n2")chg();else if(id==="sq"){clearTimeout(tm);srch()}}
+  if(!$("#app").hidden&&e.ctrlKey){
+    if(/^[1-6]$/.test(e.key)){e.preventDefault();nav(VIEWS[e.key-1][0])}
+    if(e.key.toLowerCase()==="f"){e.preventDefault();nav("search").then(()=>$("#sq").focus())}
+  }
+});
+$("#lu").focus();
+</script>
+</body>
+</html>
