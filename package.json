@@ -1,0 +1,16 @@
+{
+  "name": "personal-info",
+  "version": "1.0.0",
+  "description": "معلومات شخصية",
+  "main": "main.js",
+  "author": "personal-info",
+  "scripts": { "start": "electron ." },
+  "dependencies": { "xlsx": "0.18.5" },
+  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3" },
+  "build": {
+    "appId": "com.personal.info",
+    "productName": "PersonalInfo",
+    "files": ["main.js", "app/**/*"],
+    "win": { "target": "portable" }
+  }
+}

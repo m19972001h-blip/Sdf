@@ -3,184 +3,326 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>مقارنة الأسماء بين ملفين إكسل</title>
+<meta name="color-scheme" content="dark">
+<title>معلومات شخصية</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  :root { --bg:#f6f6f4; --card:#fff; --text:#1c1c1a; --muted:#6b6b66; --accent:#1f6feb; --line:#e2e2dd; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#161615; --card:#222221; --text:#f0f0ec; --muted:#a0a09a; --accent:#5b9cff; --line:#3a3a37; }
-  }
-  * { box-sizing:border-box; }
-  body { margin:0; padding:16px; padding-top:calc(16px + env(safe-area-inset-top,0px)); padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
-         font-family:-apple-system,"Geeza Pro","Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--text); }
-  h1 { font-size:20px; margin:0 0 14px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; }
-  label { display:block; font-size:14px; color:var(--muted); margin:8px 0 4px; }
-  input[type=file], select, input[type=number] { width:100%; font-size:16px; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
-  button { width:100%; font-size:17px; padding:13px; border:0; border-radius:12px; background:var(--accent); color:#fff; margin-top:8px; }
-  button.secondary { background:transparent; color:var(--accent); border:1px solid var(--accent); }
-  button:disabled { opacity:.45; }
-  #status { margin:8px 0; font-size:14px; color:var(--muted); }
-  .scroll { overflow-x:auto; }
-  table { border-collapse:collapse; width:100%; font-size:14px; }
-  th, td { padding:8px 6px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap; }
-  th { color:var(--muted); font-weight:600; }
-  .exact { color:#1a8a3c; font-weight:600; }
-  small { color:var(--muted); }
+:root{--c:#13244a;--line:#243c70;--gold:#f0b43c;--t:#eef2fb;--m:#8fa1c7;--g:#1f9d55;--b:#1f6feb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at 50% 0,#12285a,#070e20 70%) fixed;color:var(--t);font-family:-apple-system,"Geeza Pro",Tahoma,sans-serif}
+#app{max-width:480px;margin:auto;min-height:100vh;padding:calc(14px + env(safe-area-inset-top,0px)) 14px 100px}
+h1{margin:6px 0 2px;text-align:center;color:var(--gold);font-size:26px}
+.sub{text-align:center;color:var(--gold);font-size:13px;margin-bottom:14px}
+h2{margin:4px 0 14px;text-align:center;font-size:18px;color:var(--gold)}
+.card{background:linear-gradient(160deg,#152a56,#0f1f42);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.stats{display:flex;text-align:center}.stats div{flex:1;border-inline-start:1px solid var(--line)}.stats div:first-child{border:0}
+.stats b{display:block;font-size:22px}.stats span{font-size:12px;color:var(--m)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:linear-gradient(160deg,#152a56,#0f1f42);border:1px solid var(--line);border-radius:16px;padding:18px 8px;text-align:center;color:var(--t);font-size:16px;font-weight:600;min-height:110px;font-family:inherit}
+.tile i{display:block;font-style:normal;font-size:34px;margin-bottom:6px}
+.tile.gold{background:linear-gradient(160deg,#f6c453,#d9981f);color:#1b1404;border:0}
+button{font-family:inherit}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;font-size:18px;font-weight:700;background:linear-gradient(#f6c453,#d9981f);color:#1b1404;margin:6px 0}
+.btn.g{background:var(--g);color:#fff}.btn:disabled{opacity:.4}
+.drop{border:2px dashed #3a5aa0;border-radius:16px;padding:16px;text-align:center;margin-bottom:12px;background:#0f1f42}
+.pick{display:block;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#152a56;font-size:15px}
+.pick input{display:none}.pick small{display:block;color:var(--m);margin-top:2px}
+select,input,textarea{width:100%;font-size:16px;padding:11px;margin-top:8px;border-radius:12px;border:1px solid var(--line);background:#0b1834;color:var(--t);font-family:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:10px 0}.chips button{white-space:nowrap;border:0;border-radius:20px;padding:8px 16px;background:#152a56;color:var(--t);font-size:14px}
+.chips .on{background:var(--gold);color:#1b1404;font-weight:700}
+.cnt{text-align:center;background:#152a56;border-radius:12px;padding:10px;margin-bottom:10px;font-weight:600}
+.item{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#0f1f42;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px}
+.av{width:44px;height:44px;border-radius:10px;background:#1c3a7a;display:grid;place-items:center;font-size:22px}
+.nm{flex:1;line-height:1.5;font-size:15px}.nm span{display:block;color:var(--m);font-size:13px}
+.sc{font-weight:700;color:var(--gold)}.sc.x{color:#4cd387}
+.more{display:none;width:100%;color:var(--m);font-size:13px;border-top:1px solid var(--line);padding-top:8px}.open .more{display:block}
+.donut{width:130px;height:130px;border-radius:50%;margin:8px auto;display:grid;place-items:center}
+.donut div{width:90px;height:90px;border-radius:50%;background:#0f1f42;display:grid;place-items:center;text-align:center;font-size:12px;color:var(--m)}
+.donut b{display:block;font-size:24px;color:var(--t)}
+.bar{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}.bar i{display:block;height:9px;border-radius:5px;background:linear-gradient(90deg,#1f6feb,#35c9a0)}
+.bar span:first-child{width:34px;text-align:center}.bar span:last-child{width:60px;color:var(--m)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:auto;display:flex;background:#0a1530;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;border:0;color:var(--m);font-size:11px}nav button i{display:block;font-style:normal;font-size:22px}nav .on{color:var(--gold)}
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}.lv button{border:1px solid var(--line);background:#0f1f42;color:var(--t);border-radius:12px;padding:8px 2px;font-size:11px;line-height:1.4;font-family:inherit}.lv b{display:block;font-size:17px}.lv .on{background:var(--gold);color:#1b1404;border:0}
+.btn.o{background:none;border:1.5px solid var(--gold);color:var(--gold)}.btn.r{background:#c0392b;color:#fff}.btn.b{background:var(--b);color:#fff}.row.l{cursor:pointer}.two{display:flex;gap:8px}.two .btn{margin:6px 0;font-size:16px}label{display:block;color:var(--m);font-size:13px;margin-top:10px}
+#st{text-align:center;color:var(--m);font-size:13px;min-height:18px}
 </style>
 </head>
 <body>
-<h1>مقارنة الأسماء الثلاثية والرباعية بين ملفين</h1>
+<div id="app">
 
-<div class="card">
-  <label>الملف الأول (Excel)</label>
-  <input type="file" id="f1" accept=".xlsx,.xls,.xlsm,.csv">
-  <label>عمود الأسماء في الملف الأول</label>
-  <select id="c1" disabled></select>
+<section class="view" id="v-home" hidden>
+  <h1>معلومات شخصية</h1><div class="sub">مرحباً بك في نظام إدارة البيانات</div>
+  <div class="card stats"><div><b id="s1">0</b><span>سجل</span></div><div><b id="s2">0</b><span>مشابه</span></div><div><b id="s3">0</b><span>محافظة</span></div></div>
+  <div class="grid">
+    <button class="tile" onclick="go('compare')"><i>📊</i>مقارنة ملفات Excel</button>
+    <button class="tile gold" onclick="go('rec')"><i>👥</i>إدارة البيانات</button>
+    <button class="tile" onclick="go('reports')"><i>📈</i>التقارير والإحصائيات</button>
+    <button class="tile" onclick="go('rec');$('rq').focus()"><i>🔍</i>البحث المتقدم</button>
+    <button class="tile" onclick="go('bak')"><i>🗄️</i>النسخ الاحتياطي والاستعادة</button>
+    <button class="tile" onclick="go('settings')"><i>⚙️</i>الإعدادات</button>
+  </div>
+</section>
 
-  <label style="margin-top:16px">الملف الثاني (Excel)</label>
-  <input type="file" id="f2" accept=".xlsx,.xls,.xlsm,.csv">
-  <label>عمود الأسماء في الملف الثاني</label>
-  <select id="c2" disabled></select>
+<section class="view" id="v-login" hidden>
+  <div style="text-align:center;padding-top:50px"><div style="font-size:72px">🪶</div><h1 style="font-size:32px">معلومات شخصية</h1><div class="sub">قاعدة بيانات متكاملة لإدارة المعلومات الشخصية</div></div>
+  <button class="btn" onclick="auth('in')">🔒 تسجيل الدخول</button><button class="btn o" onclick="auth('up')">➕ إنشاء حساب جديد</button>
+</section>
+<section class="view" id="v-auth" hidden>
+  <h2 id="at"></h2>
+  <div class="card"><input id="au" placeholder="اسم المستخدم" autocomplete="username"><input id="ap" type="password" placeholder="كلمة المرور" autocomplete="current-password" style="margin-top:10px"><div id="ae" style="color:#ff7b7b;font-size:13px;margin-top:8px"></div></div>
+  <button class="btn" id="ago">متابعة</button><button class="btn o" onclick="go('login')">رجوع</button>
+</section>
+<section class="view" id="v-rec" hidden>
+  <h2>إدارة البيانات والبحث</h2>
+  <input type="search" id="rq" placeholder="ابحث بالاسم أو اسم الأم أو المحافظة أو السكن...">
+  <div class="chips" id="rchips"></div><div class="cnt" id="rcnt"></div><div id="rlist"></div>
+  <div class="two"><button class="btn" onclick="edit()">➕ إضافة سجل</button><button class="btn g" onclick="expRec()">📄 تصدير</button></div>
+</section>
+<section class="view" id="v-form" hidden>
+  <h2 id="ft"></h2><div class="card" id="ff"></div>
+  <div class="two"><button class="btn" onclick="saveRec()">حفظ</button><button class="btn o" onclick="go('rec')">إلغاء</button></div>
+</section>
+<section class="view" id="v-det" hidden>
+  <h2>تفاصيل السجل</h2><div class="card" id="dc"></div>
+  <div class="two"><button class="btn b" onclick="edit(CUR)">✏️ تعديل</button><button class="btn r" onclick="delRec()">🗑 حذف</button><button class="btn o" onclick="go('rec')">إغلاق</button></div>
+</section>
+<section class="view" id="v-bak" hidden>
+  <h2>النسخ الاحتياطي والاستعادة</h2>
+  <div class="card"><div class="row" style="border:0"><span>عدد السجلات</span><b id="bn">0</b></div></div>
+  <button class="btn" onclick="backup()">💾 تنزيل نسخة احتياطية</button>
+  <label class="btn o" style="display:block;text-align:center;color:var(--gold);font-size:18px"><input type="file" id="rf" accept=".json" hidden>♻️ استعادة من ملف</label>
+  <div id="bs" style="text-align:center;color:var(--m);font-size:13px"></div>
+</section>
+<section class="view" id="v-pw" hidden>
+  <h2>تغيير كلمة المرور</h2>
+  <div class="card"><input id="po" type="password" placeholder="كلمة المرور الحالية"><input id="pn" type="password" placeholder="كلمة المرور الجديدة" style="margin-top:10px"><div id="pe" style="color:#ff7b7b;font-size:13px;margin-top:8px"></div></div>
+  <button class="btn" onclick="savePw()">حفظ</button><button class="btn o" onclick="go('settings')">رجوع</button>
+</section>
+<section class="view" id="v-compare" hidden>
+  <h2>مقارنة ملفات Excel</h2>
+  <div class="drop"><div style="font-size:40px">📗 ⇄ 📗</div><b>اختر ملفين للمقارنة</b>
+    <div style="color:var(--m);font-size:13px;margin-top:4px">يتم كشف الأسماء المتشابهة بحسب عدد الأجزاء المتطابقة</div>
+    <label class="pick"><input type="file" id="f1" accept=".xlsx,.xls,.xlsm,.csv"><span id="l1">الملف الأول — اضغط للاختيار</span></label>
+    <select id="c1" disabled></select>
+    <label class="pick"><input type="file" id="f2" accept=".xlsx,.xls,.xlsm,.csv"><span id="l2">الملف الثاني — اضغط للاختيار</span></label>
+    <select id="c2" disabled></select>
+  </div>
+  <div class="card"><b>نسبة المقارنة</b>
+    <div class="lv" id="lv"></div>
+    <div style="color:var(--m);font-size:12px">تُعرض الأسماء التي تتطابق أجزاؤها الأولى بحسب النسبة المختارة أو أعلى منها</div></div>
+  <button class="btn" id="run" disabled>🔎 بدء المقارنة</button>
+  <div id="st"></div>
+  <div class="card stats"><div><b id="k1">0</b><span>الملفات المختارة</span></div><div><b id="k2" style="color:var(--gold)">85%</b><span>نسبة المقارنة</span></div><div><b id="k3">0</b><span>عدد المتشابه</span></div></div>
+</section>
 
-  <label style="margin-top:16px">حد التشابه %</label>
-  <input type="number" id="th" value="85" min="50" max="100" inputmode="numeric">
+<section class="view" id="v-results" hidden>
+  <h2>البحث المتقدم</h2>
+  <input type="search" id="q" placeholder="ابحث بالاسم...">
+  <div class="chips" id="chips"></div>
+  <div class="cnt" id="cnt">عدد النتائج: 0</div>
+  <div id="list"></div>
+  <button class="btn g" id="export" disabled>📄 تصدير النتائج إلى Excel</button>
+</section>
 
-  <button id="run" disabled>بحث عن المتشابهات</button>
-  <button id="export" class="secondary" disabled>حفظ النتائج في إكسل</button>
-  <div id="status"></div>
+<section class="view" id="v-reports" hidden>
+  <h2>التقارير والإحصائيات</h2>
+  <div class="card"><b>إحصائيات قاعدة البيانات</b><div class="donut" id="donut"><div><span><b id="dn">0</b>سجل</span></div></div><div id="dleg" style="text-align:center;font-size:13px"></div></div>
+  <div class="card"><b>أكثر المحافظات وجودًا</b><div id="bars"></div></div>
+</section>
+
+<section class="view" id="v-settings" hidden>
+  <h2>الإعدادات</h2>
+  <div class="card">
+    <div class="row l" onclick="chpw()"><span>🔒 تغيير كلمة المرور</span><span>‹</span></div>
+    <div class="row l" onclick="go('bak')"><span>🗄️ النسخ الاحتياطي</span><span>‹</span></div>
+    <div class="row l" onclick="go('bak')"><span>♻️ استعادة البيانات</span><span>‹</span></div>
+    <div class="row l" onclick="alert('معلومات شخصية — الإصدار 1.0\nتُحفظ البيانات على جهازك فقط.')"><span>ℹ️ عن البرنامج</span><span>‹</span></div>
+    <div class="row l" style="border:0" onclick="alert('للتواصل: أضف بريدك هنا')"><span>✉️ تواصل معنا</span><span>‹</span></div>
+  </div>
+  <button class="btn r" onclick="logout()">تسجيل الخروج</button>
+</section>
+
 </div>
-
-<div class="card scroll" id="resBox" style="display:none">
-  <table>
-    <thead><tr><th>الاسم في الملف الأول</th><th>الاسم في الملف الثاني</th><th>الكلمات</th><th>التشابه %</th><th>النوع</th></tr></thead>
-    <tbody id="rows"></tbody>
-  </table>
-</div>
-<small>تتم المعالجة بالكامل على جهازك، ولا يُرفع أي ملف إلى الإنترنت.</small>
+<nav>
+  <button data-v="home" onclick="go('home')"><i>🏠</i>الرئيسية</button>
+  <button data-v="compare" onclick="go('compare')"><i>📊</i>المقارنة</button>
+  <button data-v="rec" onclick="go('rec')"><i>👥</i>السجلات</button>
+  <button data-v="reports" onclick="go('reports')"><i>📈</i>التقارير</button>
+  <button data-v="settings" onclick="go('settings')"><i>⚙️</i>الإعدادات</button>
+</nav>
 
 <script>
-const state = [ {wb:null, rows:[], headers:[]}, {wb:null, rows:[], headers:[]} ];
-let results = [];
-const $ = id => document.getElementById(id);
-
-// ---------- توحيد النص العربي ----------
-function normalize(t) {
-  let s = String(t).trim();
-  s = s.replace(/[\u064B-\u065F\u0670\u0640]/g, "");
-  s = s.replace(/[إأآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/ؤ/g, "و").replace(/ئ/g, "ي");
-  s = s.replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
-  // دمج الأسماء المركبة: عبد الله -> عبدالله
-  s = s.replace(/(^|\s)(عبد|ابو|ابي|ذو) (\S+)/g, "$1$2$3");
-  return s;
+const $=id=>document.getElementById(id);
+let DB;try{DB=JSON.parse(localStorage.db)}catch(e){}DB=DB||{users:{},recs:[]};let ME=null,CUR=null,rf="all",AM="in";
+const S=[{rows:[]},{rows:[]}];let R=[],filt="all",LV=60;
+const LS=[40,60,80];
+const LB={40:"الاسم الثنائي",60:"الاسم الثلاثي",80:"الاسم الرباعي"};
+const SH={40:"ثنائي",60:"ثلاثي",80:"رباعي"};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function drawLv(){
+  $("lv").innerHTML=LS.map(l=>`<button class="${l===LV?"on":""}" onclick="LV=${l};drawLv()"><b>${l}%</b>${SH[l]}</button>`).join("");
+  $("k2").textContent=LV+"%";
 }
-const wc = n => n.split(" ").filter(Boolean).length;
-
-// ---------- نسبة التشابه (Levenshtein) ----------
-function lev(a, b) {
-  if (a === b) return 0;
-  const m = a.length, n = b.length;
-  if (!m) return n; if (!n) return m;
-  let prev = Array.from({length:n+1}, (_, j) => j);
-  for (let i = 1; i <= m; i++) {
-    const cur = [i];
-    for (let j = 1; j <= n; j++) {
-      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
-    }
-    prev = cur;
-  }
-  return prev[n];
+function go(v){
+  if(!ME&&v!=="auth")v="login";
+  document.querySelectorAll(".view").forEach(e=>e.hidden=e.id!=="v-"+v);
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  if(v==="results")drawList();if(v==="reports")drawReports();if(v==="rec")drawRec();if(v==="home")stats();if(v==="bak")$("bn").textContent=DB.recs.length;
+  document.querySelector("nav").hidden=v==="login"||v==="auth";scrollTo(0,0);
 }
-function ratio(a, b) { const L = Math.max(a.length, b.length); return L ? 1 - lev(a, b) / L : 1; }
-function similarity(a, b) {
-  const sa = a.split(" ").sort().join(" "), sb = b.split(" ").sort().join(" ");
-  return Math.max(ratio(a, b), ratio(sa, sb)) * 100;
+function normalize(t){
+  let s=String(t).trim().replace(/[\u064B-\u065F\u0670\u0640]/g,"");
+  s=s.replace(/[إأآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/ؤ/g,"و").replace(/ئ/g,"ي");
+  s=s.replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g," ").replace(/\s+/g," ").trim().toLowerCase();
+  return s.replace(/(^|\s)(عبد|ابو|ابي|ذو) (\S+)/g,"$1$2$3");
 }
-
-// ---------- قراءة الملفات ----------
-async function loadFile(k, file) {
-  $("status").textContent = "جارٍ قراءة الملف...";
-  try {
-    const buf = await file.arrayBuffer();
-    const wb = XLSX.read(buf, {type:"array"});
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:""});
-    const headers = (rows[0] || []).map((h, i) => String(h).trim() || ("عمود " + (i+1)));
-    state[k] = {rows, headers};
-    const sel = $("c" + (k+1));
-    sel.innerHTML = headers.map((h, i) => `<option value="${i}">${h}</option>`).join("");
-    const guess = headers.findIndex(h => h.includes("اسم") || h.toLowerCase().includes("name"));
-    sel.value = guess >= 0 ? guess : 0;
-    sel.disabled = false;
-    $("status").textContent = "";
-  } catch (e) {
-    $("status").textContent = "تعذّرت قراءة الملف: " + e.message;
-  }
-  $("run").disabled = !(state[0].rows.length && state[1].rows.length);
+function lev(a,b){
+  if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}
+  return p[n];
 }
-$("f1").onchange = e => e.target.files[0] && loadFile(0, e.target.files[0]);
-$("f2").onchange = e => e.target.files[0] && loadFile(1, e.target.files[0]);
-
-function getNames(k) {
-  const col = +$("c" + (k+1)).value;
-  const out = [];
-  state[k].rows.slice(1).forEach((r, i) => {
-    const v = r[col];
-    if (v === undefined || v === "") return;
-    const n = normalize(v);
-    if (wc(n) === 3 || wc(n) === 4) out.push({row:i+2, original:String(v).trim(), norm:n});
-  });
+// الكلمة متطابقة إن تساوت، أو اختلف حرف واحد في كلمة طويلة (6 أحرف فأكثر)
+const eq=(a,b)=>a===b||(a.length>=6&&b.length>=6&&lev(a,b)<=1);
+// مستوى التطابق بحسب عدد الأجزاء المتطابقة من البداية
+function level(p,q){
+  let k=0;const m=Math.min(4,p.length,q.length);
+  while(k<m&&eq(p[k],q[k]))k++;
+  return [0,0,40,60,80][k];
+}
+async function load(k,file){
+  $("st").textContent="جارٍ قراءة الملف...";
+  try{
+    const wb=XLSX.read(await file.arrayBuffer(),{type:"array"});
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
+    const h=(rows[0]||[]).map((x,i)=>String(x).trim()||"عمود "+(i+1));
+    S[k]={rows};const sel=$("c"+(k+1));
+    sel.innerHTML=h.map((x,i)=>`<option value="${i}">${esc(x)}</option>`).join("");
+    const g=h.findIndex(x=>x.includes("اسم")||x.toLowerCase().includes("name"));
+    sel.value=g>=0?g:0;sel.disabled=false;
+    $("l"+(k+1)).textContent="✅ "+file.name;$("st").textContent="";
+  }catch(e){$("st").textContent="تعذّرت قراءة الملف: "+e.message}
+  const n=S.filter(s=>s.rows.length).length;$("k1").textContent=n;$("run").disabled=n<2;
+}
+$("f1").onchange=e=>e.target.files[0]&&load(0,e.target.files[0]);
+$("f2").onchange=e=>e.target.files[0]&&load(1,e.target.files[0]);
+function names(k){
+  const col=+$("c"+(k+1)).value,out=[];
+  S[k].rows.slice(1).forEach((r,i)=>{const v=r[col];if(v===""||v===undefined)return;
+    const n=normalize(v);if(n)out.push({row:i+2,o:String(v).trim(),p:n.split(" ")})});
   return out;
 }
-
-// ---------- المطابقة ----------
-function findMatches(n1, n2, th) {
-  const index = new Map();
-  n2.forEach((r, j) => new Set(r.norm.split(" ")).forEach(w => {
-    if (!index.has(w)) index.set(w, []);
-    index.get(w).push(j);
-  }));
-  const out = [];
-  for (const r1 of n1) {
-    const counts = new Map();
-    new Set(r1.norm.split(" ")).forEach(w => (index.get(w) || []).forEach(j => counts.set(j, (counts.get(j) || 0) + 1)));
-    for (const [j, c] of counts) {
-      if (c < 2) continue; // كلمتان مشتركتان على الأقل
-      const r2 = n2[j];
-      const score = similarity(r1.norm, r2.norm);
-      if (score >= th) out.push({
-        "الاسم في الملف الأول": r1.original, "الصف في الملف الأول": r1.row,
-        "الاسم في الملف الثاني": r2.original, "الصف في الملف الثاني": r2.row,
-        "عدد كلمات الاسم": wc(r1.norm), "نسبة التشابه %": Math.round(score*10)/10,
-        "نوع المطابقة": r1.norm === r2.norm ? "تطابق تام" : "تشابه"
-      });
+const CAP=50000;
+function match(a,b,lv){
+  const idx=new Map();
+  b.forEach(r=>{const f=r.p[0];if(!idx.has(f))idx.set(f,[]);idx.get(f).push(r)});
+  const out=[];
+  for(const r1 of a){
+    for(const r2 of idx.get(r1.p[0])||[]){
+      const L=level(r1.p,r2.p);
+      if(L>=lv){out.push({a:r1.o,ra:r1.row,b:r2.o,rb:r2.row,s:L});if(out.length>=CAP){out.capped=true;return out.sort((x,y)=>y.s-x.s)}}
     }
   }
-  return out.sort((a, b) => b["نسبة التشابه %"] - a["نسبة التشابه %"]);
+  return out.sort((x,y)=>y.s-x.s);
 }
-
-$("run").onclick = () => {
-  $("status").textContent = "جارٍ البحث...";
-  setTimeout(() => {
-    const n1 = getNames(0), n2 = getNames(1);
-    const th = Math.min(100, Math.max(50, +$("th").value || 85));
-    results = findMatches(n1, n2, th);
-    $("rows").innerHTML = results.map(r => `<tr>
-      <td>${r["الاسم في الملف الأول"]}</td><td>${r["الاسم في الملف الثاني"]}</td>
-      <td>${r["عدد كلمات الاسم"]}</td><td>${r["نسبة التشابه %"]}</td>
-      <td class="${r["نوع المطابقة"] === "تطابق تام" ? "exact" : ""}">${r["نوع المطابقة"]}</td></tr>`).join("");
-    $("resBox").style.display = results.length ? "block" : "none";
-    $("export").disabled = !results.length;
-    $("status").textContent = `${results.length} نتيجة (من ${n1.length} × ${n2.length} اسم ثلاثي/رباعي)`;
-  }, 30);
+$("run").onclick=()=>{
+  $("st").textContent="جارٍ البحث...";
+  setTimeout(()=>{
+    const a=names(0),b=names(1);R=match(a,b,LV);
+    
+    $("k3").textContent=R.length;
+    $("st").textContent=`تمت المقارنة: ${a.length} × ${b.length} اسم`+(R.capped?` — اقتُصر على أول ${CAP} نتيجة، ارفع النسبة لتضييق النتائج`:"");
+    filt="all";go("results");
+  },30);
 };
-
-$("export").onclick = () => {
-  const ws = XLSX.utils.json_to_sheet(results);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "النتائج");
-  XLSX.writeFile(wb, "نتائج_المطابقة.xlsx");
+function drawList(){
+  $("chips").innerHTML=[["all","الكل"],...LS.map(l=>[""+l,l+"%"])].map(([k,l])=>`<button class="${filt===k?"on":""}" onclick="filt='${k}';drawList()">${l}</button>`).join("");
+  const q=$("q").value.trim().toLowerCase();
+  const L=R.filter(r=>(filt==="all"||r.s===+filt)&&(!q||(r.a+r.b).toLowerCase().includes(q)));
+  $("cnt").textContent="عدد النتائج: "+L.length;$("export").disabled=!R.length;
+  $("list").innerHTML=L.slice(0,300).map(r=>`<div class="item" onclick="this.classList.toggle('open')">
+    <div class="av">👤</div><div class="nm"><b>${esc(r.a)}</b><span>${esc(r.b)}</span></div>
+    <div class="sc ${r.s===100?"x":""}">${r.s}%</div>
+    <div class="more">${LB[r.s]}<br>الصف ${r.ra} في الملف الأول • الصف ${r.rb} في الملف الثاني</div></div>`).join("")
+    +(L.length>300?`<div class="cnt">يُعرض أول 300 نتيجة، والتصدير يشمل الكل</div>`:"");
+}
+$("q").oninput=drawList;
+$("export").onclick=()=>{
+  const d=R.map(r=>({"الاسم في الملف الأول":r.a,"الصف في الملف الأول":r.ra,"الاسم في الملف الثاني":r.b,"الصف في الملف الثاني":r.rb,"نسبة التشابه %":r.s,"مستوى التطابق":LB[r.s]}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"النتائج");
+  XLSX.writeFile(wb,"نتائج_المقارنة.xlsx");
 };
+// ---- الحسابات (محلية على الجهاز) ----
+const save=()=>{try{localStorage.db=JSON.stringify(DB)}catch(e){alert("تعذّر الحفظ: "+e.message)}};
+const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
+function auth(m){AM=m;$("at").textContent=m==="in"?"تسجيل الدخول":"إنشاء حساب جديد";$("ae").textContent="";go("auth")}
+$("ago").onclick=async()=>{
+  const u=$("au").value.trim(),p=$("ap").value;
+  if(!u||p.length<4)return $("ae").textContent="أدخل اسم المستخدم وكلمة مرور من 4 أحرف فأكثر";
+  const h=await sha(p);
+  if(AM==="up"){if(DB.users[u])return $("ae").textContent="اسم المستخدم موجود مسبقًا";DB.users[u]=h;save()}
+  else if(DB.users[u]!==h)return $("ae").textContent="بيانات الدخول غير صحيحة";
+  ME=u;$("ap").value="";go("home");
+};
+function logout(){ME=null;go("login")}
+function chpw(){$("pe").textContent="";$("po").value=$("pn").value="";go("pw")}
+async function savePw(){
+  if($("pn").value.length<4)return $("pe").textContent="كلمة المرور الجديدة 4 أحرف فأكثر";
+  if(DB.users[ME]!==await sha($("po").value))return $("pe").textContent="كلمة المرور الحالية غير صحيحة";
+  DB.users[ME]=await sha($("pn").value);save();alert("تم تغيير كلمة المرور");go("settings");
+}
+// ---- السجلات ----
+const FD=[["n","الاسم الرباعي واللقب"],["m","اسم الأم"],["g","المحافظة"],["a","السكن"],["ph","رقم الهاتف"],["x","الجنس"],["nt","ملاحظات إضافية"]];
+const RC=[["all","الكل"],["n","الاسم"],["m","اسم الأم"],["g","المحافظة"]];
+function stats(){$("s1").textContent=DB.recs.length;$("s2").textContent=R.length;$("s3").textContent=new Set(DB.recs.map(r=>r.g).filter(Boolean)).size}
+function drawRec(){
+  $("rchips").innerHTML=RC.map(([k,l])=>`<button class="${rf===k?"on":""}" onclick="rf='${k}';drawRec()">${l}</button>`).join("");
+  const q=normalize($("rq").value);
+  const L=DB.recs.filter(r=>!q||(rf==="all"?[r.n,r.m,r.g,r.a]:[r[rf]]).some(v=>normalize(v||"").includes(q)));
+  $("rcnt").textContent="عدد النتائج: "+L.length;
+  $("rlist").innerHTML=L.slice(0,300).map(r=>`<div class="item" onclick="show('${r.id}')"><div class="av">👤</div><div class="nm"><b>${esc(r.n)}</b><span>${esc(r.m||"")}${r.m&&r.g?" • ":""}${esc(r.g||"")}</span></div><div class="sc">‹</div></div>`).join("");
+}
+$("rq").oninput=drawRec;
+function show(id){CUR=DB.recs.find(r=>r.id===id);$("dc").innerHTML=FD.map(([k,l])=>`<div class="row"><span style="color:var(--m)">${l}</span><b>${esc(CUR[k]||"—")}</b></div>`).join("");go("det")}
+function edit(r){
+  CUR=r||null;$("ft").textContent=r?"تعديل السجل":"سجل جديد";
+  $("ff").innerHTML=FD.map(([k,l])=>`<label>${l}</label>`+(k==="x"?`<select id="fd_x"><option>ذكر</option><option>أنثى</option></select>`:`<input id="fd_${k}" value="${esc(r?r[k]||"":"")}">`)).join("");
+  if(r&&r.x)$("fd_x").value=r.x;go("form");
+}
+function saveRec(){
+  const o={};FD.forEach(([k])=>o[k]=$("fd_"+k).value.trim());
+  if(!o.n)return alert("أدخل الاسم");
+  if(CUR)Object.assign(CUR,o);else DB.recs.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),...o});
+  save();go("rec");
+}
+function delRec(){if(confirm("حذف هذا السجل؟")){DB.recs=DB.recs.filter(r=>r!==CUR);save();go("rec")}}
+function expRec(){
+  if(!DB.recs.length)return alert("لا توجد سجلات");
+  const d=DB.recs.map(r=>Object.fromEntries(FD.map(([k,l])=>[l,r[k]||""])));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"السجلات");XLSX.writeFile(wb,"السجلات.xlsx");
+}
+// ---- النسخ الاحتياطي ----
+function backup(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({recs:DB.recs})],{type:"application/json"}));a.download="نسخة_احتياطية.json";a.click()}
+$("rf").onchange=async e=>{
+  try{
+    const d=JSON.parse(await e.target.files[0].text());
+    if(!Array.isArray(d.recs))throw Error("ملف غير صالح");
+    if(!confirm("سيتم استبدال السجلات الحالية ("+DB.recs.length+") بسجلات النسخة ("+d.recs.length+"). متابعة؟"))return;
+    DB.recs=d.recs;save();$("bn").textContent=DB.recs.length;$("bs").textContent="تمت الاستعادة ✅";
+  }catch(x){$("bs").textContent="فشلت الاستعادة: "+x.message}
+};
+// ---- التقارير ----
+function drawReports(){
+  const t=DB.recs.length,m=DB.recs.filter(r=>r.x==="ذكر").length,p=t?m/t*100:0;
+  $("donut").style.background=t?`conic-gradient(#1f6feb 0 ${p}%,#ff6fb5 ${p}% 100%)`:"#243c70";$("dn").textContent=t;
+  $("dleg").innerHTML=`<span style="color:#5b9cff">● ذكور ${m}</span> &nbsp; <span style="color:#ff6fb5">● إناث ${t-m}</span>`;
+  const c={};DB.recs.forEach(r=>{const g=(r.g||"").trim();if(g)c[g]=(c[g]||0)+1});
+  const e=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=Math.max(1,...e.map(x=>x[1]));
+  $("bars").innerHTML=e.map(([g,n])=>`<div class="bar"><span style="width:64px">${esc(g)}</span><i style="width:${n/mx*50}%;min-width:4px"></i><span>${n}</span></div>`).join("")||"<small>لا توجد بيانات بعد</small>";
+}
+drawLv();go("home");
 </script>
 </body>
 </html>
