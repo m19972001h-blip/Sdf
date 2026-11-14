@@ -3,6 +3,9 @@ name: Build Windows App
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -13,8 +16,9 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npx electron-builder --win portable --publish never
-      - uses: actions/upload-artifact@v4
+      - name: Publish exe as a GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: personal-info-windows
-          path: dist/*.exe
-          if-no-files-found: error
+          tag_name: v2.0.${{ github.run_number }}
+          name: Personal Info v2.0.${{ github.run_number }}
+          files: dist/*.exe
